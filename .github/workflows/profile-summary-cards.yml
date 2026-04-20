@@ -16,10 +16,10 @@ jobs:
       - name: Validate summary token
         shell: bash
         env:
-          SUMMARY_GITHUB_TOKEN: ${{ secrets.SUMMARY_GITHUB_TOKEN }}
+          SUMMARY_GITHUB_TOKEN: ${{ secrets['profile-summary-cards-token'] }}
         run: |
           if [ -z "$SUMMARY_GITHUB_TOKEN" ]; then
-            echo "::error title=Missing SUMMARY_GITHUB_TOKEN::Create a repository secret named SUMMARY_GITHUB_TOKEN. Use a classic personal access token with scopes public_repo, read:user, and user:email."
+            echo "::error title=Missing profile-summary-cards-token::Create a repository secret named profile-summary-cards-token. Use a classic personal access token with scopes public_repo, read:user, and user:email."
             exit 1
           fi
 
@@ -29,18 +29,18 @@ jobs:
             https://api.github.com/user)"
 
           if [ "$status" != "200" ]; then
-            echo "::error title=Invalid SUMMARY_GITHUB_TOKEN::GitHub API returned HTTP $status. Replace the secret with a valid classic personal access token that has public_repo, read:user, and user:email."
+            echo "::error title=Invalid profile-summary-cards-token::GitHub API returned HTTP $status. Replace the secret with a valid classic personal access token that has public_repo, read:user, and user:email."
             cat /tmp/github-user.json
             exit 1
           fi
 
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SUMMARY_GITHUB_TOKEN }}
+          token: ${{ secrets['profile-summary-cards-token'] }}
 
       - uses: vn7n24fzkq/github-profile-summary-cards@release
         env:
-          GITHUB_TOKEN: ${{ secrets.SUMMARY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets['profile-summary-cards-token'] }}
         with:
           USERNAME: ${{ github.repository_owner }}
           BRANCH_NAME: main
